@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Календарь-головоломка</title>
+    <style>
+        .table {
+            background-color: #dcd3c2;
+            border: 2px solid;
+            border-radius: 3px;
+            padding: 10px;
+            border-spacing: 0;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            font-size: 24px;
+            background-color: #f3ead8;
+            padding: 0;
+            border-left: 1px solid #c3baab;
+            border-top: 1px solid #c3baab;
+        }
+
+        .table tr:first-child .cell,
+        .cell-b {
+            border-top-color: #4e4942;
+        }
+
+        .table tr:last-child .cell {
+            border-bottom: 1px solid #4e4942;
+        }
+
+        .cell:first-child {
+            border-left-color: #4e4942;
+        }
+
+        .cell:last-child {
+            border-right: 1px solid #4e4942;
+        }
+
+        .table tr:last-child .cell_empty {
+            border-top-color: #4e4942 !important;
+        }
+
+        .cell:not(.cell_empty)+.cell.cell_empty {
+            border-left-color: #4e4942 !important;
+        }
+
+        .cell.cell_empty {
+            background-color: transparent;
+            border-color: transparent !important;
+        }
+
+        .fig {
+            display: flex;
+            gap: 1px;
+            flex-wrap: wrap;
+            position: absolute;
+            transition: scale 0.8s ease, rotate 0.8s ease;
+        }
+
+        .fig3x2 {
+            width: 152px;
+            height: 101px;
+            transform-origin: 50% 25%;
+        }
+
+        .fig3x3 {
+            width: 152px;
+            height: 152px;
+            transform-origin: 50%;
+        }
+
+        .fig4x2 {
+            width: 203px;
+            height: 101px;
+            transform-origin: 50%;
+        }
+
+        .fig>* {
+            width: 50px;
+            height: 50px;
+            z-index: 5;
+            position: relative;
+        }
+
+        .fig>.empty {
+            background-color: transparent;
+            z-index: 1;
+            position: relative;
+        }
+
+        .red>* {
+            background-color: #ec1a3d;
+        }
+
+        .blue>* {
+            background-color: #017dc5;
+        }
+
+        .lime>* {
+            background-color: #98c83c;
+        }
+
+        .yelow>* {
+            background-color: #ffde00;
+        }
+
+        .sky>* {
+            background-color: #00adef;
+        }
+
+        .purple>* {
+            background-color: #8e5fa7;
+        }
+
+        .green>* {
+            background-color: #01ac4e;
+        }
+
+        .orange>* {
+            background-color: #f47725;
+        }
+
+        .dropzone {
+            position: relative;
+            user-select: none;
+        }
+
+        .dropzone .fig {
+            position: absolute;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dropzone">
+        <table class="table">
+            <tr>
+                <td class="cell cell_m">янв</td>
+                <td class="cell cell_m">фев</td>
+                <td class="cell cell_m">мар</td>
+                <td class="cell cell_m">апр</td>
+                <td class="cell cell_m">май</td>
+                <td class="cell cell_m">июн</td>
+                <td class="cell cell_empty"></td>
+            </tr>
+            <tr>
+                <td class="cell cell_m">июл</td>
+                <td class="cell cell_m">авг</td>
+                <td class="cell cell_m">сен</td>
+                <td class="cell cell_m">окт</td>
+                <td class="cell cell_m">ноя</td>
+                <td class="cell cell_m">дек</td>
+                <td class="cell cell_empty"></td>
+            </tr>
+            <tr>
+                <td class="cell cell_d">1</td>
+                <td class="cell cell_d">2</td>
+                <td class="cell cell_d">3</td>
+                <td class="cell cell_d">4</td>
+                <td class="cell cell_d">5</td>
+                <td class="cell cell_d">6</td>
+                <td class="cell cell_d cell-b">7</td>
+            </tr>
+            <tr>
+                <td class="cell cell_d">8</td>
+                <td class="cell cell_d">9</td>
+                <td class="cell cell_d">10</td>
+                <td class="cell cell_d">11</td>
+                <td class="cell cell_d">12</td>
+                <td class="cell cell_d">13</td>
+                <td class="cell cell_d">14</td>
+            </tr>
+            <tr>
+                <td class="cell cell_d">15</td>
+                <td class="cell cell_d">16</td>
+                <td class="cell cell_d">17</td>
+                <td class="cell cell_d">18</td>
+                <td class="cell cell_d">19</td>
+                <td class="cell cell_d">20</td>
+                <td class="cell cell_d">21</td>
+            </tr>
+            <tr>
+                <td class="cell cell_d">22</td>
+                <td class="cell cell_d">23</td>
+                <td class="cell cell_d">24</td>
+                <td class="cell cell_d">25</td>
+                <td class="cell cell_d">26</td>
+                <td class="cell cell_d">27</td>
+                <td class="cell cell_d">28</td>
+            </tr>
+            <tr>
+                <td class="cell cell_d">29</td>
+                <td class="cell cell_d">30</td>
+                <td class="cell cell_d">31</td>
+                <td class="cell cell_empty"></td>
+                <td class="cell cell_empty"></td>
+                <td class="cell cell_empty"></td>
+                <td class="cell cell_empty"></td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <div class="fig fig3x2 red">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="fig fig3x2 blue">
+            <div></div>
+            <div class="empty"></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="fig fig3x2 lime">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div class="empty"></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="fig fig4x2 yelow">
+            <div></div>
+            <div></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="fig fig4x2 sky">
+            <div class="empty"></div>
+            <div></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="fig fig4x2 orange">
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="fig fig3x3 purple">
+            <div></div>
+            <div></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="fig fig3x3 green">
+            <div></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <script>
+        let dragged = null;
+        let offsetX;
+        let offsetY;
+        const figurs = document.querySelectorAll(".fig");
+        figurs.forEach((source) => {
+            source.addEventListener("mousedown", function (event) {
+                if (event.target.classList.contains("empty")) {
+                    return;
+                }
+
+                offsetX = event.clientX - source.offsetLeft;
+                offsetY = event.clientY - source.offsetTop;
+                source.style.opacity = "0.5";
+                source.style.zIndex = "13";
+                //source.style.position = "absolute";
+                dragged = source;
+
+            });
+            source.addEventListener("dblclick", function (event) {
+                if (event.target.classList.contains("empty")) {
+                    return;
+                }
+                if (source.rot === undefined) {
+                    source.rot = 0;
+                }
+                if (source.refX === undefined) {
+                    source.refX = 1;
+                    source.refY = 1;
+                }
+                if (event.shiftKey) {
+
+                    if (source.rot % 180 == 0) {
+                        source.refX *= -1;
+                    } else {
+                        source.refY *= -1;
+                    }
+
+                    source.style.scale = source.refX + " " + source.refY;
+                    return true;
+                }
+                source.rot += 90;
+                source.style.rotate = source.rot + "deg";
+            });
+
+            source.addEventListener("transitionend", function (event) {
+                if (source.rot == 360) {
+                    source.rot = 0;
+                    source.style.transition = "none";
+                    source.style.rotate = source.rot + "deg";
+                    setTimeout(function () { source.style.transition = ""; }, 0); //none transition 360 -> 0
+                }
+            });
+        });
+
+        document.body.addEventListener("mousemove", function (event) {
+            //console.log(dragged)
+            if (dragged) {
+                dragged.style.top = event.clientY - offsetY + "px";
+                dragged.style.left = event.clientX - offsetX + "px";
+            }
+        });
+        document.body.addEventListener("mouseup", function (event) {
+            //console.log(dragged)
+            if (dragged) {
+                dragged.style.opacity = "";
+                dragged.style.zIndex = "";
+                //dragged.style.position = "";
+                let correctY = 0
+                if (dragged.classList.contains("fig3x2") && dragged.rot == 180) {
+                    correctY = -1;
+                }
+                let x = 51 * Math.round(((event.clientX - offsetX) - 21) / 51) + 21;
+                let y = 51 * Math.round(((event.clientY - offsetY) - 21) / 51) + 21 + correctY;
+
+                dragged.style.left = x + "px";
+                dragged.style.top = y + "px";
+                //console.log(event.target, event.target.closest(".dropzone"));
+
+                let cubics = document.querySelectorAll(".fig > div:not(.empty)");
+                let arr = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0]];
+                cubics.forEach(function (el) {
+                    const bounds = el.getBoundingClientRect();
+                    let x = (Math.round(bounds.x) - 21) / 51;
+                    let y = (Math.round(bounds.y) - 21) / 51;
+                    if (arr[y] !== undefined && arr[y][x] !== undefined) {
+                        arr[y][x] = 1;
+                    }
+                });
+                let cellEmpty = []
+                arr.forEach(function (row, y) {
+                    row.forEach(function (cell, x) {
+                        if (cell === 0) {
+                            cellEmpty.push({ x: x, y: y });
+                        }
+                    });
+                });
+                if (cellEmpty.length == 2) {
+                    //собрано число
+                    const today = new Date();
+                    day = { x: (today.getDate() - 1) % 7, y: 2 + Math.floor((today.getDate() - 1) / 7) };
+                    month = { x: today.getMonth() % 6, y: Math.floor(today.getMonth() / 6) };
+
+                    if (
+                        (cellEmpty[0].x == month.x && cellEmpty[0].y == month.y &&
+                            cellEmpty[1].x == day.x && cellEmpty[1].y == day.y)
+                        ||
+                        (cellEmpty[1].x == month.x && cellEmpty[1].y == month.y &&
+                            cellEmpty[0].x == day.x && cellEmpty[0].y == day.y)
+
+                    ) {
+                        //победа
+                        alert("Поздравляю вы победили!");
+                    }
+                    /*
+                    let m1 = cellEmpty[0].y * 6 + cellEmpty[0].x;
+                    let d1 = (cellEmpty[1].y - 2) * 7 + cellEmpty[1].x + 1;
+                    let date1 = new Date();
+                    date1.setMonth(m1);
+                    date1.setDate(d1);
+                    console.log(date1);
+
+                    let m2 = cellEmpty[1].y * 6 + cellEmpty[1].x;
+                    let d2 = (cellEmpty[0].y - 2) * 7 + cellEmpty[0].x + 1;
+                    let date2 = new Date();
+                    date2.setMonth(m2);
+                    date2.setDate(d2);
+                    console.log(date2);
+                    */
+                }
+
+                if (event.target.closest(".dropzone")) { }
+
+                dragged = null;
+            }
+        });
+
+    </script>
+</body>
+
+</html>

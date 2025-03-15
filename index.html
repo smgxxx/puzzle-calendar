@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>puzzle-calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serf;
+            display: grid;
+            grid-template-rows: 400px 1fr;
+            gap: 30px;
+            margin: 0;
+            padding: 30px;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .calendar {
+            border: 1px solid #221d19;
+            border-radius: 5px;
+            box-shadow: 0 0 5px #d8d3c5;
+            color: #212526;
+            padding: 10px;
+            background-color: #dcd3c2;
+            font-size: 24px;
+
+        }
+
+        .calendar tbody {
+            outline: 1px solid #161310;
+        }
+
+        .calendar tbody td {
+            outline: 1px solid #dcd3c2;
+
+            width: 60px;
+            height: 60px;
+            vertical-align: middle;
+            text-align: center;
+            font-weight: 600;
+            background-color: #f3ebd8;
+        }
+
+
+        .calendar tfoot th {
+            padding: 15px 0 5px;
+            font-size: 32px;
+        }
+
+        .calendar tfoot th img {
+            vertical-align: middle;
+            width: 40px;
+            height: 40px;
+            margin-right: 4px;
+        }
+
+        .calendar tfoot th a {
+            color: #212526;
+            text-decoration: none;
+        }
+
+        .calendar tfoot th a:hover {
+            text-decoration: underline;
+        }
+
+        .figs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            height: 100%;
+            max-width: 1200px;
+            min-width: 800px;
+            box-sizing: border-box;
+            border: 1px solid #221d19;
+            background-color: #dcd3c2;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 0 auto;
+        }
+
+        .figure {
+            opacity: 0.95;
+        }
+
+        .red {
+            background: red;
+            width: 180px;
+            height: 180px;
+            clip-path: polygon(0 0, 180px 0, 180px 60px, 120px 60px, 120px 120px, 60px 120px, 60px 180px, 0 180px, 0 0);
+
+        }
+
+        .gold {
+            background: gold;
+            width: 120px;
+            height: 180px;
+            clip-path: polygon(0 60px, 60px 60px, 60px 0, 120px 0, 120px 180px, 0 180px, 0 60px);
+        }
+
+        .green {
+            background: green;
+            width: 300px;
+            height: 120px;
+            clip-path: polygon(0 0, 60px 0, 60px 60px, 300px 60px, 300px 120px, 0 120px, 0 0);
+        }
+
+        .orange {
+            background: orange;
+            width: 240px;
+            height: 120px;
+            clip-path: polygon(0 0, 180px 0, 180px 60px, 240px 60px, 240px 120px, 120px 120px, 120px 60px, 60px 60px, 60px 120px, 0 120px, 0 0);
+        }
+
+        .blue {
+            background: blue;
+            width: 240px;
+            height: 120px;
+            clip-path: polygon(0 0, 60px 0, 60px 60px, 120px 60px, 120px 0, 180px 0, 180px 60px, 240px 60px, 240px 120px, 0 120px, 0 0);
+        }
+
+        .cyan {
+            background: cyan;
+            width: 240px;
+            height: 120px;
+            clip-path: polygon(0 0, 120px 0, 120px 60px, 240px 60px, 240px 120px, 0 120px, 0 0);
+        }
+
+        .purple {
+            background: purple;
+            width: 180px;
+            height: 180px;
+            clip-path: polygon(0 0, 60px 0, 60px 60px, 120px 60px, 120px 0, 180px 0, 180px 120px, 60px 120px, 60px 180px, 0 180px, 0 0);
+        }
+
+        .teal {
+            background: teal;
+            width: 300px;
+            height: 120px;
+            clip-path: polygon(0 0, 300px 0, 300px 60px, 240px 60px, 240px 120px, 180px 120px, 180px 60px, 0 60px, 0 0);
+        }
+
+        .wrap {
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .lol {
+            width: 600px;
+            height: 300px;
+            border: 1px solid #000;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+
+        }
+
+        .lol .figure {
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="lol dropzone" id="drop-target" oncontextmenu="return false"></div>
+        <table class="calendar" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td>янв</td>
+                    <td>фев</td>
+                    <td>мар</td>
+                    <td>апр</td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>пн</td>
+                    <td>вт</td>
+                </tr>
+                <tr>
+                    <td>май</td>
+                    <td>июн</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>7</td>
+                    <td>8</td>
+                    <td>9</td>
+                    <td>10</td>
+                    <td>11</td>
+                    <td>ср</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>13</td>
+                    <td>14</td>
+                    <td>15</td>
+                    <td>16</td>
+                    <td>17</td>
+                    <td>18</td>
+                    <td>19</td>
+                    <td>20</td>
+                    <td>чт</td>
+                </tr>
+                <tr>
+                    <td>июл</td>
+                    <td>авг</td>
+                    <td>21</td>
+                    <td>22</td>
+                    <td>23</td>
+                    <td>24</td>
+                    <td>25</td>
+                    <td>26</td>
+                    <td>27</td>
+                    <td>пт</td>
+                </tr>
+                <tr>
+                    <td>сен</td>
+                    <td>окт</td>
+                    <td>ноя</td>
+                    <td>дек</td>
+                    <td>28</td>
+                    <td>29</td>
+                    <td>30</td>
+                    <td>31</td>
+                    <td>вс</td>
+                    <td>сб</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="10"><a href="https://etudes.ru/models/puzzle-calendar/" target="_blank"><img src="/logo.svg" alt=""> Математические этюды</a></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="figs dropzone" oncontextmenu="return false">
+        <div class="red figure" draggable="true"></div>
+        <div class="gold figure" draggable="true"></div>
+        <div class="green figure" draggable="true"></div>
+        <div class="orange figure" draggable="true"></div>
+        <div class="blue figure" draggable="true"></div>
+        <div class="cyan figure" draggable="true"></div>
+        <div class="purple figure" draggable="true"></div>
+        <div class="teal figure" draggable="true"></div>
+    </div>
+
+    <script>
+
+        let dragged = null;
+        let offsetX = 0;
+        let offsetY = 0;
+        const figurs = document.querySelectorAll(".figure");
+        figurs.forEach((source) => {
+            source.addEventListener("dragstart", (event) => {
+                // store a ref. on the dragged elem
+                dragged = event.target;
+                offsetX = event.clientX - dragged.getBoundingClientRect().left;
+                offsetY = event.clientY - dragged.getBoundingClientRect().top;
+            });
+            source.addEventListener("dblclick", (event) => {
+                event.preventDefault();
+                rotate(source, event.shiftKey);
+            });
+            source.addEventListener("mouseup", (event) => {
+                if (event.which == 3) {
+                    console.log(event)
+                    reflection(source);
+                }
+            });
+        });
+
+        //const target = document.querySelector("#drop-target");
+        const dropzone = document.querySelectorAll(".dropzone");
+        dropzone.forEach(zone => {
+            zone.addEventListener("dragover", (event) => {
+                // prevent default to allow drop
+                event.preventDefault();
+            });
+            zone.addEventListener("drop", (event) => {
+                // prevent default action (open as a link for some elements)
+                event.preventDefault();
+                // move dragged element to the selected drop target
+                let target = event.target;
+                if (event.target.classList.contains("figure")) {
+                    target = target.parentElement;
+                }
+                if (target.classList.contains("dropzone")) {
+                    dragged.parentNode.removeChild(dragged);
+                    target.appendChild(dragged);
+                }
+                if (target.id = "drop-target") {
+                    target.getBoundingClientRect().top
+                    let x = Math.round(event.pageX - offsetX - target.getBoundingClientRect().left);
+                    let y = Math.round(event.pageY - offsetY - target.getBoundingClientRect().top);
+                    x_o = x % 60;
+                    y_o = y % 60;
+                    if (x_o <= 30) {
+                        x -= x_o
+                    } else {
+                        x += 60 - x_o
+                    }
+                    if (y_o <= 30) {
+                        y -= y_o
+                    } else {
+                        y += 60 - y_o
+                    }
+                    dragged.style.top = y + "px";
+                    dragged.style.left = x + "px";
+                }
+            });
+        })
+
+        function rotate(elem, isShift = false) {
+            let curAngle = elem.rotate;
+            if (curAngle === undefined) {
+                curAngle = 0;
+            }
+            if (isShift) {
+                curAngle = curAngle - 180;
+            }
+            elem.rotate = (curAngle + 90) % 360;
+            elem.style.rotate = elem.rotate + "deg";
+            if (elem.rotate == 90 || elem.rotate == 270) {
+                if (elem.classList.contains("orange") || elem.classList.contains("blue") || elem.classList.contains("cyan")) {
+                    elem.style.translate = "-60px 60px";
+                }
+                if (elem.classList.contains("gold")) {
+                    elem.style.translate = "30px -30px";
+                }
+                if (elem.classList.contains("green") || elem.classList.contains("teal")) {
+                    elem.style.translate = "-90px 90px";
+                }
+            } else {
+                elem.style.translate = "";
+            }
+        }
+
+        function reflection(elem) {
+            let curReflection = elem.reflection;
+            if (curReflection === undefined) {
+                curReflection = false;
+            }
+            elem.reflection = !curReflection;
+            if (elem.reflection) {
+                elem.style.scale = "1 -1";
+            } else {
+                elem.style.scale = "";
+            }
+        }
+    </script>
+</body>
+
+</html>
