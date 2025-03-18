@@ -4,6 +4,7 @@ const blockHeight = 50;
 const borderColor = "rgba(127,127,127,1)";
 const textColor = "rgba(0,0,0,1)";
 const tableBgColor = "#f3ead7";
+const tableBgColorToday = "#ffd570";
 const mainBgColor = "#ffffff";
 const borderWidth = 1;
 const calendar_month = [["янв", "фев", "мар", "апр", "май", "июн"], ["июл", "авг", "сен", "окт", "ноя", "дек"]];
@@ -13,6 +14,9 @@ const max_day = 31;
 
 const paddingCanvasTop = 20;
 const paddingCanvasLeft = 20;
+
+
+let blockClick = false;
 
 const figs = [
     { color: "#ec1a3d", body: [[true, true, true], [true, true, true]], size: { width: 3 * (blockWidth + borderWidth) + borderWidth, height: 2 * (blockHeight + borderWidth) + borderWidth }, x: paddingCanvasLeft + 0, y: paddingCanvasTop + 408 + 0, isHover: false },
@@ -29,15 +33,9 @@ const figs = [
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-
-
-
-
 function drawTable() {
     ctx.fillStyle = borderColor;
     ctx.fillRect(paddingCanvasLeft, paddingCanvasTop, (blockWidth + borderWidth) * day_columns + borderWidth, (blockHeight + borderWidth) * day_rows + borderWidth);
-
-
 
     ctx.font = "24px serif";
     ctx.textAlign = "center";
@@ -46,6 +44,9 @@ function drawTable() {
         row.forEach((cell, x) => {
 
             ctx.fillStyle = tableBgColor;
+            if (y * 6 + x == new Date().getMonth()) {
+                ctx.fillStyle = tableBgColorToday;
+            }
             ctx.fillRect(paddingCanvasLeft + x * (blockWidth + borderWidth) + borderWidth, paddingCanvasTop + y * (blockHeight + borderWidth) + borderWidth, (blockWidth + 0 * borderWidth), (blockHeight + 0 * borderWidth));
 
             ctx.fillStyle = textColor;
@@ -61,6 +62,9 @@ function drawTable() {
         let x = i % day_columns;
         let y = 2 + Math.floor(i / day_rows);
         ctx.fillStyle = tableBgColor;
+        if (i + 1 == new Date().getDate()) {
+            ctx.fillStyle = tableBgColorToday;
+        }
         ctx.fillRect(paddingCanvasLeft + x * (blockWidth + borderWidth) + borderWidth, paddingCanvasTop + y * (blockHeight + borderWidth) + borderWidth, (blockWidth + 0 * borderWidth), (blockHeight + 0 * borderWidth));
 
         ctx.fillStyle = textColor;
@@ -72,7 +76,6 @@ function drawTable() {
 }
 
 function drawFigurs() {
-    //console.log(1)
     figs.forEach(fig => {
         drawFigur(fig, fig.x, fig.y);
     });
@@ -131,11 +134,55 @@ function getFigureOnCursor(x, y) {
     return searchId;
 }
 
+function rotate(fig) {
+    //rotate(figs[i])
+    let newBody = [];
+    let mI = fig.body.length;
+    let mJ = fig.body[0].length;
+
+    fig.body.forEach((row, i) => {
+        row.forEach((cell, j) => {
+            if (newBody[j] === undefined) {
+                newBody[j] = [];
+            }
+            newBody[j][mI - i - 1] = cell;
+        });
+    });
+    fig.body = newBody;
+    let oldH = fig.size.height;
+    let oldW = fig.size.width;
+    fig.size.height = fig.size.width;
+    fig.size.width = oldH;
+    if ((mJ % 2 == 0 && mI % 2 != 0) || (mJ % 2 != 0 && mI % 2 == 0)) {
+        //fig.x += Math.floor((oldW - oldH) / 2);
+        fig.y += Math.floor((oldH - oldW));
+    } else {
+        fig.x += Math.floor((oldW - oldH) / 2);
+        fig.y += Math.floor((oldH - oldW) / 2);
+    }
+}
+function reflect(fig) {
+    let newBody = [];
+    let mI = fig.body.length;
+    let mJ = fig.body[0].length;
+
+
+    //reflect
+    fig.body.forEach((row, i) => {
+        if (newBody[i] === undefined) {
+            newBody[i] = [];
+        }
+        newBody[mI - i - 1] = row;
+    });
+    fig.body = newBody;
+    return;
+}
+
 let dragged = null;
 let offsetX = 0;
 let offsetY = 0;
+let isMoved = true;
 canvas.addEventListener("mousedown", function (event) {
-    //console.log(event.clientX, event.clientY, event.target.offsetLeft, event.target.offsetTop, event.target.clientLeft, event.target.clientTop);
     let x = event.clientX - event.target.offsetLeft - event.target.clientLeft;
     let y = event.clientY - event.target.offsetTop - event.target.clientTop;
 
@@ -147,55 +194,9 @@ canvas.addEventListener("mousedown", function (event) {
         figs.push(figs.splice(dragged, 1)[0]);
         dragged = figs.length - 1;
     }
-    console.log(figs[dragged]);
+    isMoved = false;
 });
-canvas.addEventListener("dblclick", function (event) {
-    let x = event.clientX - event.target.offsetLeft - event.target.clientLeft;
-    let y = event.clientY - event.target.offsetTop - event.target.clientTop;
 
-
-    let i = getFigureOnCursor(x, y);
-    if (i === null) return;
-
-    let newBody = [];
-    let mI = figs[i].body.length;
-    let mJ = figs[i].body[0].length;
-
-    if (event.shiftKey) {
-        //reflect
-        figs[i].body.forEach((row, i) => {
-            if (newBody[i] === undefined) {
-                newBody[i] = [];
-            }
-            newBody[mI - i - 1] = row;
-        });
-        figs[i].body = newBody;
-        return;
-    }
-
-    //rotate(figs[i])
-    figs[i].body.forEach((row, i) => {
-        row.forEach((cell, j) => {
-            if (newBody[j] === undefined) {
-                newBody[j] = [];
-            }
-            newBody[j][mI - i - 1] = cell;
-        });
-    });
-    figs[i].body = newBody;
-    let oldH = figs[i].size.height;
-    let oldW = figs[i].size.width;
-    figs[i].size.height = figs[i].size.width;
-    figs[i].size.width = oldH;
-    console.log((oldW - oldH) / 2, (oldH - oldW) / 2);
-    if ((mJ % 2 == 0 && mI % 2 != 0) || (mJ % 2 != 0 && mI % 2 == 0)) {
-        //figs[i].x += Math.floor((oldW - oldH) / 2);
-        figs[i].y += Math.floor((oldH - oldW));
-    } else {
-        figs[i].x += Math.floor((oldW - oldH) / 2);
-        figs[i].y += Math.floor((oldH - oldW) / 2);
-    }
-});
 canvas.addEventListener("mousemove", function (event) {
 
     let x = event.clientX - event.target.offsetLeft - event.target.clientLeft;
@@ -217,6 +218,7 @@ canvas.addEventListener("mousemove", function (event) {
         figs[dragged].x = x - offsetX;
         figs[dragged].y = y - offsetY;
     }
+    isMoved = true;
 });
 canvas.addEventListener("mouseup", function (event) {
     if (dragged !== null) {
@@ -225,6 +227,20 @@ canvas.addEventListener("mouseup", function (event) {
 
         figs[dragged].x = Math.min(Math.max(x - offsetX, 0), canvas.width - figs[dragged].size.width);
         figs[dragged].y = Math.min(Math.max(y - offsetY, 0), canvas.height - figs[dragged].size.height);
+
+
+        if (!isMoved) {
+            let islkm = event.button == 0;
+            //let ismkm = event.button == 1;
+            let ispkm = event.button == 2;
+
+
+            if (islkm) {
+                rotate(figs[dragged]);
+            } else if (ispkm) {
+                reflect(figs[dragged]);
+            }
+        }
 
         figs[dragged].x = (blockWidth + borderWidth) * Math.round((figs[dragged].x - paddingCanvasLeft) / (blockWidth + borderWidth)) + paddingCanvasLeft;
         figs[dragged].y = (blockHeight + borderWidth) * Math.round((figs[dragged].y - paddingCanvasLeft) / (blockHeight + borderWidth)) + paddingCanvasTop;
@@ -275,22 +291,9 @@ canvas.addEventListener("mouseup", function (event) {
                 //победа
                 alert("Поздравляю вы победили!");
             }
-            /*
-            let m1 = cellEmpty[0].y * 6 + cellEmpty[0].x;
-            let d1 = (cellEmpty[1].y - 2) * 7 + cellEmpty[1].x + 1;
-            let date1 = new Date();
-            date1.setMonth(m1);
-            date1.setDate(d1);
-            console.log(date1);
-
-            let m2 = cellEmpty[1].y * 6 + cellEmpty[1].x;
-            let d2 = (cellEmpty[0].y - 2) * 7 + cellEmpty[0].x + 1;
-            let date2 = new Date();
-            date2.setMonth(m2);
-            date2.setDate(d2);
-            console.log(date2);
-            */
         }
 
     }
+
+    setTimeout(function () { blockClick = false; }, 150);
 });
